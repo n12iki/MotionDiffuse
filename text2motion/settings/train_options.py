@@ -1,4 +1,4 @@
-from base_options import BaseOptions
+from .base_options import BaseOptions
 import argparse
 
 class TrainCompOptions(BaseOptions):
