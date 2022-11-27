@@ -2,12 +2,12 @@ import torch
 import torch.nn.functional as F
 import random
 import time
-from models.transformer import MotionTransformer
+from ..trans.transformer import MotionTransformer
 from torch.utils.data import DataLoader
 import torch.optim as optim
 from torch.nn.utils import clip_grad_norm_
 from collections import OrderedDict
-from utils.utils import print_current_loss
+from ..util.utils import print_current_loss
 from os.path import join as pjoin
 import codecs as cs
 import torch.distributed as dist
