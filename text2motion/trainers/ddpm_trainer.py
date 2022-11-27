@@ -1,13 +1,16 @@
+import sys
+sys.path.append('../trans')
+sys.path.append('../utils')
 import torch
 import torch.nn.functional as F
 import random
 import time
-from ..trans.transformer import MotionTransformer
+from .transformer import MotionTransformer
 from torch.utils.data import DataLoader
 import torch.optim as optim
 from torch.nn.utils import clip_grad_norm_
 from collections import OrderedDict
-from ..util.utils import print_current_loss
+from .utils import print_current_loss
 from os.path import join as pjoin
 import codecs as cs
 import torch.distributed as dist
