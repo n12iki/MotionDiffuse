@@ -33,7 +33,6 @@ class Text2MotionDataset(data.Dataset):
         for name in tqdm(id_list):
             try:
                 motion = np.load(pjoin(opt.motion_dir, name + '.npy'))
-                print(motion, flush=True)
                 if (len(motion)) < min_motion_len or (len(motion) >= 200):
                     continue
                 text_data = []
@@ -77,7 +76,6 @@ class Text2MotionDataset(data.Dataset):
                 # Some motion may not exist in KIT dataset
                 pass
 
-
         name_list, length_list = zip(*sorted(zip(new_name_list, length_list), key=lambda x: x[1]))
 
         if opt.is_train:
@@ -109,6 +107,7 @@ class Text2MotionDataset(data.Dataset):
         self.length_arr = np.array(length_list)
         self.data_dict = data_dict
         self.name_list = name_list
+        print(data_dict,flush=True)
 
     def inv_transform(self, data):
         return data * self.std + self.mean
@@ -120,6 +119,7 @@ class Text2MotionDataset(data.Dataset):
         return self.real_len() * self.times
 
     def __getitem__(self, item):
+        print("hi")
         idx = item % self.real_len()
         data = self.data_dict[self.name_list[idx]]
         motion, m_length, text_list = data['motion'], data['length'], data['text']
