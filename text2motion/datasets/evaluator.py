@@ -1,7 +1,7 @@
 import torch
-from utils.word_vectorizer import WordVectorizer, POS_enumerator
-from utils.get_opt import get_opt
-from models import MotionTransformer
+from util.word_vectorizer import WordVectorizer, POS_enumerator
+from util.get_opt import get_opt
+from trans import MotionTransformer
 from torch.utils.data import Dataset, DataLoader
 from os.path import join as pjoin
 from tqdm import tqdm
