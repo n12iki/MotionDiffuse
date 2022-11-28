@@ -18,7 +18,7 @@ import torch.distributed as dist
 
 
 from mmcv.runner import get_dist_info
-from models.gaussian_diffusion import (
+from trans.gaussian_diffusion import (
     GaussianDiffusion,
     get_named_beta_schedule,
     create_named_schedule_sampler,
