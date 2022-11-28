@@ -119,7 +119,7 @@ class Text2MotionDataset(data.Dataset):
         return self.real_len() * self.times
 
     def __getitem__(self, item):
-        print("hi")
+        print("hi", flush=True)
         idx = item % self.real_len()
         data = self.data_dict[self.name_list[idx]]
         motion, m_length, text_list = data['motion'], data['length'], data['text']
