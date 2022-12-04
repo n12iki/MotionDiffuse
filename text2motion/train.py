@@ -91,5 +91,7 @@ if __name__ == '__main__':
 
     print("trainer")
     trainer = DDPMTrainer(opt, encoder)
+    print("Dataset")
     train_dataset = Text2MotionDataset(opt, mean, std, train_split_file, opt.times)
+    print("train")
     trainer.train(train_dataset)
