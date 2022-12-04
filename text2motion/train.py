@@ -68,12 +68,14 @@ if __name__ == '__main__':
     else:
         raise KeyError('Dataset Does Not Exist')
 
+    print("dim_word")
     dim_word = 300
     mean = np.load(pjoin(opt.data_root, 'Mean.npy'))
     std = np.load(pjoin(opt.data_root, 'Std.npy'))
 
     train_split_file = pjoin(opt.data_root, 'train.txt')
-
+    
+    print("encoder")
     encoder = build_models(opt, dim_pose)
     if world_size > 1:
         encoder = MMDistributedDataParallel(
@@ -87,7 +89,7 @@ if __name__ == '__main__':
     else:
         encoder = encoder.cuda()
 
-    print("hi")
+    print("trainer")
     trainer = DDPMTrainer(opt, encoder)
     train_dataset = Text2MotionDataset(opt, mean, std, train_split_file, opt.times)
     trainer.train(train_dataset)
