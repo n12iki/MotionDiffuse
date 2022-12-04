@@ -5,9 +5,11 @@ from matplotlib import pyplot as plt
 import pandas as pd
 from collections import Counter,OrderedDict
 import re
+import stanza
 # assign directory
 directory = "/home/n12i/Desktop/french/annotations/csv/translation/clean"
- 
+
+nlp=stanza.Pipeline('fr')
 # iterate over files in
 # that directory
 maxTime=0
@@ -65,7 +67,7 @@ plt.xticks(rotation=90)
 plt.figure(2)
 wordsL=[item for sublist in wordsL for item in sublist]
 wordStatL=Counter(wordsL)
-simpleWordStatL=Counter({k: c for k, c in wordStatL.items() if c >= 50})
+simpleWordStatL=Counter({k: c for k, c in wordStatL.items() if c >= 100})
 #print(simpleWordStatL)
 
 simpleWordStatL = OrderedDict(simpleWordStatL.most_common())
@@ -79,7 +81,7 @@ directory = "/home/n12i/Desktop/french/annotations/csv/translation/clean"
  
 # iterate over files in
 # that directory
-sentences=[]
+sentenceMatch=[]
 uniqueSentence=[]
 wordLowerLimit=Counter({k: c for k, c in wordStat.items() if c >= 10})
 files = [f for f in os.listdir(directory) if f[-4:]==".csv"]
@@ -117,7 +119,7 @@ valTable=pd.DataFrame(columns=["sentence","RIGHT_WRIST_X","RIGHT_WRIST_Y","RIGHT
                       "RIGHT_ELBOW_X","RIGHT_ELBOW_Y"
                       ])
 for filename in files:
-    #print(filename)
+    print(filename)
     tableLand=pd.read_csv("/home/n12i/Desktop/french/features/landmarks/clean/"+filename,delimiter=",",)
     table=pd.read_csv(directory+"/"+filename,delimiter=",",)
     #print(table["gloss"])
@@ -128,7 +130,14 @@ for filename in files:
             s=row["gloss"]
             s=re.sub(r'[^\w\s]','',s)
             s=s.split(" ")
-            sentence=list(filter(('').__ne__, s))
+            sentenceList=list(filter(('').__ne__, s))
+            sentence=" ".join(list(filter(('').__ne__, s)))
+            doc = nlp(sentence)
+            sentence=  sentence+"#"
+            for phrase in doc.sentences:
+                for word in phrase.words:
+                    sentence= sentence+str(word.lemma)+"/"+str(word.pos)+" "
+            sentence=sentence[:-1]+"#0.0#0.0"
             skip=0
             start=int(row["start"]*50/1000)
             if start==0:
@@ -155,13 +164,15 @@ for filename in files:
                    np.array(tableLand["RIGHT_SHOULDER_X"][start-1:end]),np.array(tableLand["RIGHT_SHOULDER_Y"][start-1:end]),
                    np.array(tableLand["LEFT_ELBOW_X"][start-1:end]),np.array(tableLand["LEFT_ELBOW_Y"][start-1:end]),
                    np.array(tableLand["RIGHT_ELBOW_X"][start-1:end]),np.array(tableLand["RIGHT_ELBOW_Y"][start-1:end])]
-            if all(elem in wordLowerLimit  for elem in sentence):
+
+            if all(elem in wordLowerLimit  for elem in sentenceList):
                 skip=1
-                if not(sentence in sentences):
+                if not(sentence in sentenceMatch):
                     if(len(testTable)<=150):
                         testTable.loc[len(testTable.index)] = inRow
                     else:
-                        valTable.loc[len(testTable.index)] = inRow
+                        valTable.loc[len(valTable.index)] = inRow
+                    sentenceMatch.append(sentence)
             if skip==0:
                 trainTable.loc[len(trainTable.index)] = inRow
 try:

@@ -87,6 +87,7 @@ if __name__ == '__main__':
     else:
         encoder = encoder.cuda()
 
+    print("hi")
     trainer = DDPMTrainer(opt, encoder)
     train_dataset = Text2MotionDataset(opt, mean, std, train_split_file, opt.times)
     trainer.train(train_dataset)
