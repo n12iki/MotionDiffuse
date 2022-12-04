@@ -34,7 +34,7 @@ class Text2MotionDataset(data.Dataset):
             try:
                 motion = np.load(pjoin(opt.motion_dir, name + '.npy'))
                 print("motion",flush=True)
-                print(motion,flush=True)
+                print(motion.shape,flush=True)
                 if (len(motion)) < min_motion_len or (len(motion) >= 200):
                     continue
                 text_data = []
