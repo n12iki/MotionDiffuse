@@ -64,14 +64,24 @@ if __name__ == '__main__':
         dim_pose = 251
         opt.max_motion_length = 196
         kinematic_chain = paramUtil.kit_kinematic_chain
+    elif opt.dataset_name == 'LSFB':
+        opt.data_root = '/content/drive/MyDrive/LSFB/'
+        opt.motion_dir = pjoin(opt.data_root, 'new_joint_vecs')
+        opt.text_dir = pjoin(opt.data_root, 'texts')
+        opt.joints_num = 21
+        radius = 240 * 8
+        fps = 12.5
+        dim_pose = 42
+        opt.max_motion_length = 500
+        kinematic_chain = paramUtil.kit_kinematic_chain
 
     else:
         raise KeyError('Dataset Does Not Exist')
 
     print("dim_word")
     dim_word = 300
-    mean = np.load(pjoin(opt.data_root, 'Mean.npy'))
-    std = np.load(pjoin(opt.data_root, 'Std.npy'))
+    #mean = np.load(pjoin(opt.data_root, 'Mean.npy'))
+    #std = np.load(pjoin(opt.data_root, 'Std.npy'))
 
     train_split_file = pjoin(opt.data_root, 'train.txt')
     
@@ -92,6 +102,6 @@ if __name__ == '__main__':
     print("trainer")
     trainer = DDPMTrainer(opt, encoder)
     print("Dataset")
-    train_dataset = Text2MotionDataset(opt, mean, std, train_split_file, opt.times)
+    train_dataset = Text2MotionDataset(opt,train_split_file, opt.times)
     print("train")
     trainer.train(train_dataset)
