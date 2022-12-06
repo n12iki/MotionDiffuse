@@ -65,9 +65,9 @@ if __name__ == '__main__':
         opt.max_motion_length = 196
         kinematic_chain = paramUtil.kit_kinematic_chain
     elif opt.dataset_name == 'LSFB':
-        opt.data_root = '/content/drive/MyDrive/LSFB/'
-        opt.motion_dir = pjoin(opt.data_root, 'new_joint_vecs')
-        opt.text_dir = pjoin(opt.data_root, 'texts')
+        opt.data_root = '/content/drive/MyDrive/dataFolder/final'
+        opt.motion_dir = pjoin(opt.data_root, 'landmarks')
+        opt.text_dir = pjoin(opt.data_root, 'text')
         opt.joints_num = 21
         radius = 240 * 8
         fps = 12.5
