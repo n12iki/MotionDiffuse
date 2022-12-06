@@ -47,8 +47,13 @@ for index, row in trainTable.iterrows():
     with open("./text/"+str(index)+name+".txt",'w') as f:
         print(row["sentence"])
         f.write(row["sentence"])
-    with open("train.txt","w") as f:
-        f.write(name)
+    if index==0:
+        with open("train.txt","w") as f:
+            f.write(str(index)+name+"\n")
+    else:
+        with open("train.txt","a") as f:
+            f.write(str(index)+name+"\n")
+
 
 for index, row in testTable.iterrows():
     name=get_random_string(20)
@@ -71,8 +76,13 @@ for index, row in testTable.iterrows():
     with open("./text/"+str(index)+name+".txt",'w') as f:
         print(row["sentence"])
         f.write(row["sentence"])
-    with open("test.txt","w") as f:
-        f.write(name)
+    if index==0:
+        with open("test.txt","w") as f:
+            f.write(str(index)+name+"\n")
+    else:
+        with open("test.txt","a") as f:
+            f.write(str(index)+name+"\n")
+
 
 for index, row in valTable.iterrows():
     name=get_random_string(20)
@@ -95,5 +105,10 @@ for index, row in valTable.iterrows():
     with open("./text/"+str(index)+name+".txt",'w') as f:
         print(row["sentence"])
         f.write(row["sentence"])
-    with open("val.txt","w") as f:
-        f.write(name)
+    if index==0:
+        with open("val.txt","w") as f:
+            f.write(str(index)+name+"\n")
+    else:
+        with open("val.txt","a") as f:
+            f.write(str(index)+name+"\n")
+
