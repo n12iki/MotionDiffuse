@@ -189,14 +189,24 @@ class DDPMTrainer(object):
 
         start_time = time.time()
 
-        train_loader = build_dataloader(
-            train_dataset,
-            samples_per_gpu=self.opt.batch_size,
-            drop_last=True,
-            workers_per_gpu=4,
-            shuffle=True,
-            dist=self.opt.distributed,
-            num_gpus=0)#1)#len(self.opt.gpu_id))
+        try:
+            train_loader = build_dataloader(
+                train_dataset,
+                samples_per_gpu=self.opt.batch_size,
+                drop_last=True,
+                workers_per_gpu=4,
+                shuffle=True,
+                dist=self.opt.distributed,
+                num_gpus=len(self.opt.gpu_id))
+        except:
+            train_loader = build_dataloader(
+                train_dataset,
+                samples_per_gpu=self.opt.batch_size,
+                drop_last=True,
+                workers_per_gpu=4,
+                shuffle=True,
+                dist=self.opt.distributed,
+                num_gpus=1)
 
         logs = OrderedDict()
         for epoch in range(cur_epoch, self.opt.num_epochs):
