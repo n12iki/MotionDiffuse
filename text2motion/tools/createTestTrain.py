@@ -24,6 +24,7 @@ columns=["RIGHT_WRIST_X","RIGHT_WRIST_Y","RIGHT_THUMB_TIP_X","RIGHT_THUMB_TIP_Y"
 
 trainTable=pd.read_csv("/home/n12i/Desktop/french/final/train.csv")
 testTable=pd.read_csv("/home/n12i/Desktop/french/final/test.csv")
+valTable=pd.read_csv("/home/n12i/Desktop/french/final/val.csv")
 
 for index, row in trainTable.iterrows():
     name=get_random_string(20)
@@ -46,3 +47,53 @@ for index, row in trainTable.iterrows():
     with open("./text/"+str(index)+name+".txt",'w') as f:
         print(row["sentence"])
         f.write(row["sentence"])
+    with open("train.txt","w") as f:
+        f.write(name)
+
+for index, row in testTable.iterrows():
+    name=get_random_string(20)
+    #print(row[columns])
+    result=np.array([])
+    length=row["RIGHT_WRIST_X"][1:-1].replace("\n", "").replace("  "," ").split(" ")
+    length=len(list(filter(("").__ne__, length)))
+    for j in range(length):
+        frame=[]
+        for i in row[columns]:
+            i=i[1:-1].replace("\n", "").replace("  "," ").split(" ")
+            i=list(filter(("").__ne__, i))
+            frame.append(float(i[j]))
+        if len(result)!=0:
+            result=np.vstack((result, frame))
+        else:
+            result=np.array(frame)
+    with open("./landmarks/"+str(index)+name+'.npy', 'wb') as f:
+        np.save(f, result)
+    with open("./text/"+str(index)+name+".txt",'w') as f:
+        print(row["sentence"])
+        f.write(row["sentence"])
+    with open("test.txt","w") as f:
+        f.write(name)
+
+for index, row in valTable.iterrows():
+    name=get_random_string(20)
+    #print(row[columns])
+    result=np.array([])
+    length=row["RIGHT_WRIST_X"][1:-1].replace("\n", "").replace("  "," ").split(" ")
+    length=len(list(filter(("").__ne__, length)))
+    for j in range(length):
+        frame=[]
+        for i in row[columns]:
+            i=i[1:-1].replace("\n", "").replace("  "," ").split(" ")
+            i=list(filter(("").__ne__, i))
+            frame.append(float(i[j]))
+        if len(result)!=0:
+            result=np.vstack((result, frame))
+        else:
+            result=np.array(frame)
+    with open("./landmarks/"+str(index)+name+'.npy', 'wb') as f:
+        np.save(f, result)
+    with open("./text/"+str(index)+name+".txt",'w') as f:
+        print(row["sentence"])
+        f.write(row["sentence"])
+    with open("val.txt","w") as f:
+        f.write(name)
