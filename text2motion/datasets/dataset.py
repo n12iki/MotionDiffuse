@@ -109,7 +109,7 @@ class Text2MotionDataset(data.Dataset):
         self.name_list = name_list
 
     def inv_transform(self, data):
-        return data * self.std + self.mean
+        return data# * self.std + self.mean
 
     def real_len(self):
         return len(self.data_dict)
@@ -118,7 +118,6 @@ class Text2MotionDataset(data.Dataset):
         return self.real_len() * self.times
 
     def __getitem__(self, item):
-        print("hi", flush=True)
         idx = item % self.real_len()
         data = self.data_dict[self.name_list[idx]]
         motion, m_length, text_list = data['motion'], data['length'], data['text']
@@ -138,7 +137,7 @@ class Text2MotionDataset(data.Dataset):
 
         assert len(motion) == max_motion_length
         "Z Normalization"
-        motion = (motion - self.mean) / self.std
+        #motion = (motion - self.mean) / self.std
 
         if self.eval_mode:
             tokens = text_data['tokens']
