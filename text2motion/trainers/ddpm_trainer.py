@@ -251,6 +251,19 @@ class DDPMTrainer(object):
 
             if rank == 0:
                 self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
+                for k, v in mean_loss.items():
+                    values.append(v)
+                for k, v in mean_loss.items():
+                    values2.append(v)
+                if sum(values2)/len(values2)<bestscore2:
+                    bestscore2=sum(values2)/len(values2)
+                    self.save(pjoin(self.opt.model_dir, 'bestMean.tar'), epoch, it)
+                if len(values)>10:
+                    bestscoreMean=sum(values)/len(values)
+                    values=values[1:]
+                if bestscoreMean<bestscore:
+                    self.save(pjoin(self.opt.model_dir, 'bestMean.tar'), epoch, it)
+                    bestscore=bestscoreMean
 
             if epoch % self.opt.save_every_e == 0 and rank == 0:
                 self.save(pjoin(self.opt.model_dir, 'ckpt_e%03d.tar'%(epoch)),
