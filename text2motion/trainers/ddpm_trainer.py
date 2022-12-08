@@ -227,8 +227,8 @@ class DDPMTrainer(object):
                         mean_loss[tag] = value / self.opt.log_every
                     logs = OrderedDict()
                     print_current_loss(start_time, it, mean_loss, epoch, inner_iter=i)
-                    if mean_loss<bestscore:
-                        self.save(pjoin(self.opt.model_dir, 'best.tar'), epoch, it)
+                    #if mean_loss<bestscore:
+                    #    self.save(pjoin(self.opt.model_dir, 'best.tar'), epoch, it)
 
                 if it % self.opt.save_latest == 0 and rank == 0:
                     self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
