@@ -97,7 +97,7 @@ class Text2MotionDataset(data.Dataset):
             # foot contact (B, seq_len, 4)
             std[4 + (joints_num - 1) * 9 + joints_num * 3:] = std[
                                                               4 + (joints_num - 1) * 9 + joints_num * 3:] / opt.feat_bias
-            assert 4 + (joints_num - 1) * 9 + joints_num * 3 + 4 == mean.shape[-1]
+            #assert 4 + (joints_num - 1) * 9 + joints_num * 3 + 4 == mean.shape[-1]
             np.save(pjoin(opt.meta_dir, 'mean.npy'), mean)
             np.save(pjoin(opt.meta_dir, 'std.npy'), std)
 
