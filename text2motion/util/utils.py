@@ -55,6 +55,8 @@ def print_current_loss(start_time, niter_state, losses, epoch=None, inner_iter=N
 
     for k, v in losses.items():
         message += ' %s: %.4f ' % (k, v)
+        print("k="+str(k))
+        print("v="+str(v))
     print(message)
 
 
