@@ -12,7 +12,7 @@ class Text2MotionDataset(data.Dataset):
     """Dataset for Text2Motion generation task.
 
     """
-    def __init__(self, opt, split_file, times=1, w_vectorizer=None, eval_mode=False):
+    def __init__(self, opt,mean,std, split_file, times=1, w_vectorizer=None, eval_mode=False):
         self.opt = opt
         self.max_length = 20
         self.times = times
@@ -78,32 +78,31 @@ class Text2MotionDataset(data.Dataset):
 
         name_list, length_list = zip(*sorted(zip(new_name_list, length_list), key=lambda x: x[1]))
 
-        #if opt.is_train:
-        #    # root_rot_velocity (B, seq_len, 1)
-        #    std[0:1] = std[0:1] / opt.feat_bias
-        #    # root_linear_velocity (B, seq_len, 2)
-        #    std[1:3] = std[1:3] / opt.feat_bias
-        #    # root_y (B, seq_len, 1)
-        #    std[3:4] = std[3:4] / opt.feat_bias
-        #    # ric_data (B, seq_len, (joint_num - 1)*3)
-        #    std[4: 4 + (joints_num - 1) * 3] = std[4: 4 + (joints_num - 1) * 3] / 1.0
-        #    # rot_data (B, seq_len, (joint_num - 1)*6)
-        #    std[4 + (joints_num - 1) * 3: 4 + (joints_num - 1) * 9] = std[4 + (joints_num - 1) * 3: 4 + (
-        #                joints_num - 1) * 9] / 1.0
+        if opt.is_train:
+            # root_rot_velocity (B, seq_len, 1)
+            std[0:1] = std[0:1] / opt.feat_bias
+            # root_linear_velocity (B, seq_len, 2)
+            std[1:3] = std[1:3] / opt.feat_bias
+            # root_y (B, seq_len, 1)
+            std[3:4] = std[3:4] / opt.feat_bias
+            # ric_data (B, seq_len, (joint_num - 1)*3)
+            std[4: 4 + (joints_num - 1) * 3] = std[4: 4 + (joints_num - 1) * 3] / 1.0
+            # rot_data (B, seq_len, (joint_num - 1)*6)
+            std[4 + (joints_num - 1) * 3: 4 + (joints_num - 1) * 9] = std[4 + (joints_num - 1) * 3: 4 + (
+                        joints_num - 1) * 9] / 1.0
             # local_velocity (B, seq_len, joint_num*3)
-       #     std[4 + (joints_num - 1) * 9: 4 + (joints_num - 1) * 9 + joints_num * 3] = std[
-        #                                                                               4 + (joints_num - 1) * 9: 4 + (
-        #                                                                                           joints_num - 1) * 9 + joints_num * 3] / 1.0
+            std[4 + (joints_num - 1) * 9: 4 + (joints_num - 1) * 9 + joints_num * 3] = std[
+                                                                                       4 + (joints_num - 1) * 9: 4 + (
+                                                                                                   joints_num - 1) * 9 + joints_num * 3] / 1.0
             # foot contact (B, seq_len, 4)
-        #    std[4 + (joints_num - 1) * 9 + joints_num * 3:] = std[
-        #                                                      4 + (joints_num - 1) * 9 + joints_num * 3:] / opt.feat_bias
+            std[4 + (joints_num - 1) * 9 + joints_num * 3:] = std[
+                                                              4 + (joints_num - 1) * 9 + joints_num * 3:] / opt.feat_bias
+            assert 4 + (joints_num - 1) * 9 + joints_num * 3 + 4 == mean.shape[-1]
+            np.save(pjoin(opt.meta_dir, 'mean.npy'), mean)
+            np.save(pjoin(opt.meta_dir, 'std.npy'), std)
 
-        #    assert 4 + (joints_num - 1) * 9 + joints_num * 3 + 4 == mean.shape[-1]
-        #    np.save(pjoin(opt.meta_dir, 'mean.npy'), mean)
-        #    np.save(pjoin(opt.meta_dir, 'std.npy'), std)
-
-        #self.mean = mean
-        #self.std = std
+        self.mean = mean
+        self.std = std
         self.length_arr = np.array(length_list)
         self.data_dict = data_dict
         self.name_list = name_list

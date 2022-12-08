@@ -26,6 +26,7 @@ trainTable=pd.read_csv("/home/n12i/Desktop/french/final/train.csv")
 testTable=pd.read_csv("/home/n12i/Desktop/french/final/test.csv")
 valTable=pd.read_csv("/home/n12i/Desktop/french/final/val.csv")
 
+
 for index, row in trainTable.iterrows():
     name=get_random_string(20)
     #print(row[columns])
@@ -112,3 +113,50 @@ for index, row in valTable.iterrows():
         with open("val.txt","a") as f:
             f.write(str(index)+name+"\n")
 
+
+data={"RIGHT_WRIST_X":[],"RIGHT_WRIST_Y":[],"RIGHT_THUMB_TIP_X":[],"RIGHT_THUMB_TIP_Y":[],
+                      "RIGHT_INDEX_FINGER_TIP_X":[],"RIGHT_INDEX_FINGER_TIP_Y":[],"RIGHT_MIDDLE_FINGER_TIP_X":[],
+                      "RIGHT_MIDDLE_FINGER_TIP_Y":[],"RIGHT_RING_FINGER_TIP_X":[],"RIGHT_RING_FINGER_TIP_Y":[],
+                      "RIGHT_PINKY_TIP_X":[],"RIGHT_PINKY_TIP_Y":[],"LEFT_WRIST_X":[],"LEFT_WRIST_Y":[],
+                      "LEFT_THUMB_TIP_X":[],"LEFT_THUMB_TIP_Y":[],"LEFT_INDEX_FINGER_TIP_X":[],"LEFT_INDEX_FINGER_TIP_Y":[],
+                      "LEFT_MIDDLE_FINGER_TIP_X":[],"LEFT_MIDDLE_FINGER_TIP_Y":[],"LEFT_RING_FINGER_TIP_X":[],
+                      "LEFT_RING_FINGER_TIP_Y":[],"LEFT_PINKY_TIP_X":[],"LEFT_PINKY_TIP_Y":[],"NOSE_X":[],"NOSE_Y":[],"LEFT_EAR_X":[],
+                      "LEFT_EAR_Y":[],"RIGHT_EAR_X":[],"RIGHT_EAR_Y":[],"MOUTH_LEFT_X":[],"MOUTH_LEFT_Y":[],"MOUTH_RIGHT_X":[],"MOUTH_RIGHT_Y":[],
+                      "LEFT_SHOULDER_X":[],"LEFT_SHOULDER_Y":[],"RIGHT_SHOULDER_X":[],"RIGHT_SHOULDER_Y":[],"LEFT_ELBOW_X":[],"LEFT_ELBOW_Y":[],
+                      "RIGHT_ELBOW_X":[],"RIGHT_ELBOW_Y":[]
+}
+for index, row in trainTable.iterrows():
+    for i in columns:
+        values=list(filter(("").__ne__, row[i][1:-1].replace("\n", "").replace("  "," ").split(" ")))
+        values=[float(i) for i in values]
+        if any(np.isnan(np.array(values))):
+            print(i)
+            print(index)
+            print(row[i][1:-1])
+        #data[i].append(values)
+
+for index, row in testTable.iterrows():
+    for i in columns:
+        values=list(filter(("").__ne__, row[i][1:-1].replace("\n", "").replace("  "," ").split(" ")))
+        values=[float(i) for i in values]
+        if any(np.isnan(np.array(values))):
+            print(list(filter(("").__ne__, row[i][1:-1].replace("\n", "").replace("  "," ").split(" "))))
+        data[i].append(values)
+
+for index, row in valTable.iterrows():
+    for i in columns:
+        values=list(filter(("").__ne__, row[i][1:-1].replace("\n", "").replace("  "," ").split(" ")))
+        values=[float(i) for i in values]
+        if any(np.isnan(np.array(values))):
+            print(list(filter(("").__ne__, row[i][1:-1].replace("\n", "").replace("  "," ").split(" "))))
+        data[i].append(values)
+
+sumVal=[]
+stdVal=[]
+for i in data:
+    values=[item for sublist in data[i] for item in sublist] 
+    print(all(isinstance(item, float) for item in values))
+    sumVal.append(sum(values)/len(values))
+    stdVal.append(np.std(values))
+np.save("Mean.npy", np.array(sumVal))
+np.save("Std.npy",np.array(stdVal))

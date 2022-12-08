@@ -85,6 +85,17 @@ sentenceMatch=[]
 uniqueSentence=[]
 wordLowerLimit=Counter({k: c for k, c in wordStat.items() if c >= 10})
 files = [f for f in os.listdir(directory) if f[-4:]==".csv"]
+columns=["RIGHT_WRIST_X","RIGHT_WRIST_Y","RIGHT_THUMB_TIP_X","RIGHT_THUMB_TIP_Y",
+                      "RIGHT_INDEX_FINGER_TIP_X","RIGHT_INDEX_FINGER_TIP_Y","RIGHT_MIDDLE_FINGER_TIP_X",
+                      "RIGHT_MIDDLE_FINGER_TIP_Y","RIGHT_RING_FINGER_TIP_X","RIGHT_RING_FINGER_TIP_Y",
+                      "RIGHT_PINKY_TIP_X","RIGHT_PINKY_TIP_Y","LEFT_WRIST_X","LEFT_WRIST_Y",
+                      "LEFT_THUMB_TIP_X","LEFT_THUMB_TIP_Y","LEFT_INDEX_FINGER_TIP_X","LEFT_INDEX_FINGER_TIP_Y",
+                      "LEFT_MIDDLE_FINGER_TIP_X","LEFT_MIDDLE_FINGER_TIP_Y","LEFT_RING_FINGER_TIP_X",
+                      "LEFT_RING_FINGER_TIP_Y","LEFT_PINKY_TIP_X","LEFT_PINKY_TIP_Y","NOSE_X","NOSE_Y","LEFT_EAR_X",
+                      "LEFT_EAR_Y","RIGHT_EAR_X","RIGHT_EAR_Y","MOUTH_LEFT_X","MOUTH_LEFT_Y","MOUTH_RIGHT_X","MOUTH_RIGHT_Y",
+                      "LEFT_SHOULDER_X","LEFT_SHOULDER_Y","RIGHT_SHOULDER_X","RIGHT_SHOULDER_Y","LEFT_ELBOW_X","LEFT_ELBOW_Y",
+                      "RIGHT_ELBOW_X","RIGHT_ELBOW_Y"
+                      ]
 testTable=pd.DataFrame(columns=["sentence","RIGHT_WRIST_X","RIGHT_WRIST_Y","RIGHT_THUMB_TIP_X","RIGHT_THUMB_TIP_Y",
                       "RIGHT_INDEX_FINGER_TIP_X","RIGHT_INDEX_FINGER_TIP_Y","RIGHT_MIDDLE_FINGER_TIP_X",
                       "RIGHT_MIDDLE_FINGER_TIP_Y","RIGHT_RING_FINGER_TIP_X","RIGHT_RING_FINGER_TIP_Y",
@@ -129,54 +140,59 @@ for filename in files:
     diffInd=np.where(diff>500)
     for index, row in table.iterrows():
         if not(pd.isna(row["gloss"])):
-            s=row["gloss"]
-            s=re.sub(r'[^\w\s]','',s)
-            s=s.split(" ")
-            sentenceList=list(filter(('').__ne__, s))
-            sentence=" ".join(list(filter(('').__ne__, s)))
-            doc = nlp(sentence)
-            sentence=  sentence+"#"
-            for phrase in doc.sentences:
-                for word in phrase.words:
-                    sentence= sentence+str(word.lemma)+"/"+str(word.pos)+" "
-            sentence=sentence[:-1]+"#0.0#0.0"
-            skip=0
-            start=int(row["start"]*50/1000)
-            if start==0:
-                start=1
-            end=int(row["end"]*50/1000)
-            inRow=[sentence,np.array(tableLand["RIGHT_WRIST_X"][start-1:end]),np.array(tableLand["RIGHT_WRIST_Y"][start-1:end]),
-                   np.array(tableLand["RIGHT_THUMB_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_THUMB_TIP_Y"][start-1:end]),
-                   np.array(tableLand["RIGHT_INDEX_FINGER_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_INDEX_FINGER_TIP_Y"][start-1:end]),
-                   np.array(tableLand["RIGHT_MIDDLE_FINGER_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_MIDDLE_FINGER_TIP_Y"][start-1:end]),
-                   np.array(tableLand["RIGHT_RING_FINGER_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_RING_FINGER_TIP_Y"][start-1:end]),
-                   np.array(tableLand["RIGHT_PINKY_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_PINKY_TIP_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_WRIST_X"][start-1:end]),np.array(tableLand["LEFT_WRIST_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_THUMB_TIP_X"][start-1:end]),np.array(tableLand["LEFT_THUMB_TIP_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_INDEX_FINGER_TIP_X"][start-1:end]),np.array(tableLand["LEFT_INDEX_FINGER_TIP_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_MIDDLE_FINGER_TIP_X"][start-1:end]),np.array(tableLand["LEFT_MIDDLE_FINGER_TIP_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_RING_FINGER_TIP_X"][start-1:end]),np.array(tableLand["LEFT_RING_FINGER_TIP_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_PINKY_TIP_X"][start-1:end]),np.array(tableLand["LEFT_PINKY_TIP_Y"][start-1:end]),
-                   np.array(tableLand["NOSE_X"][start-1:end]),np.array(tableLand["NOSE_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_EAR_X"][start-1:end]),np.array(tableLand["LEFT_EAR_Y"][start-1:end]),
-                   np.array(tableLand["RIGHT_EAR_X"][start-1:end]),np.array(tableLand["RIGHT_EAR_Y"][start-1:end]),
-                   np.array(tableLand["MOUTH_LEFT_X"][start-1:end]),np.array(tableLand["MOUTH_LEFT_Y"][start-1:end]),
-                   np.array(tableLand["MOUTH_RIGHT_X"][start-1:end]),np.array(tableLand["MOUTH_RIGHT_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_SHOULDER_X"][start-1:end]),np.array(tableLand["LEFT_SHOULDER_Y"][start-1:end]),
-                   np.array(tableLand["RIGHT_SHOULDER_X"][start-1:end]),np.array(tableLand["RIGHT_SHOULDER_Y"][start-1:end]),
-                   np.array(tableLand["LEFT_ELBOW_X"][start-1:end]),np.array(tableLand["LEFT_ELBOW_Y"][start-1:end]),
-                   np.array(tableLand["RIGHT_ELBOW_X"][start-1:end]),np.array(tableLand["RIGHT_ELBOW_Y"][start-1:end])]
+            flag=0
+            for i in columns:
+                if any(np.isnan(np.array(tableLand[i]))):
+                    flag=1
+            if flag==0:
+                s=row["gloss"]
+                s=re.sub(r'[^\w\s]','',s)
+                s=s.split(" ")
+                sentenceList=list(filter(('').__ne__, s))
+                sentence=" ".join(list(filter(('').__ne__, s)))
+                doc = nlp(sentence)
+                sentence=  sentence+"#"
+                for phrase in doc.sentences:
+                    for word in phrase.words:
+                        sentence= sentence+str(word.lemma)+"/"+str(word.pos)+" "
+                sentence=sentence[:-1]+"#0.0#0.0"
+                skip=0
+                start=int(row["start"]*50/1000)
+                if start==0:
+                    start=1
+                end=int(row["end"]*50/1000)
+                inRow=[sentence,np.array(tableLand["RIGHT_WRIST_X"][start-1:end]),np.array(tableLand["RIGHT_WRIST_Y"][start-1:end]),
+                       np.array(tableLand["RIGHT_THUMB_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_THUMB_TIP_Y"][start-1:end]),
+                       np.array(tableLand["RIGHT_INDEX_FINGER_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_INDEX_FINGER_TIP_Y"][start-1:end]),
+                       np.array(tableLand["RIGHT_MIDDLE_FINGER_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_MIDDLE_FINGER_TIP_Y"][start-1:end]),
+                       np.array(tableLand["RIGHT_RING_FINGER_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_RING_FINGER_TIP_Y"][start-1:end]),
+                       np.array(tableLand["RIGHT_PINKY_TIP_X"][start-1:end]),np.array(tableLand["RIGHT_PINKY_TIP_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_WRIST_X"][start-1:end]),np.array(tableLand["LEFT_WRIST_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_THUMB_TIP_X"][start-1:end]),np.array(tableLand["LEFT_THUMB_TIP_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_INDEX_FINGER_TIP_X"][start-1:end]),np.array(tableLand["LEFT_INDEX_FINGER_TIP_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_MIDDLE_FINGER_TIP_X"][start-1:end]),np.array(tableLand["LEFT_MIDDLE_FINGER_TIP_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_RING_FINGER_TIP_X"][start-1:end]),np.array(tableLand["LEFT_RING_FINGER_TIP_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_PINKY_TIP_X"][start-1:end]),np.array(tableLand["LEFT_PINKY_TIP_Y"][start-1:end]),
+                       np.array(tableLand["NOSE_X"][start-1:end]),np.array(tableLand["NOSE_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_EAR_X"][start-1:end]),np.array(tableLand["LEFT_EAR_Y"][start-1:end]),
+                       np.array(tableLand["RIGHT_EAR_X"][start-1:end]),np.array(tableLand["RIGHT_EAR_Y"][start-1:end]),
+                       np.array(tableLand["MOUTH_LEFT_X"][start-1:end]),np.array(tableLand["MOUTH_LEFT_Y"][start-1:end]),
+                       np.array(tableLand["MOUTH_RIGHT_X"][start-1:end]),np.array(tableLand["MOUTH_RIGHT_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_SHOULDER_X"][start-1:end]),np.array(tableLand["LEFT_SHOULDER_Y"][start-1:end]),
+                       np.array(tableLand["RIGHT_SHOULDER_X"][start-1:end]),np.array(tableLand["RIGHT_SHOULDER_Y"][start-1:end]),
+                       np.array(tableLand["LEFT_ELBOW_X"][start-1:end]),np.array(tableLand["LEFT_ELBOW_Y"][start-1:end]),
+                       np.array(tableLand["RIGHT_ELBOW_X"][start-1:end]),np.array(tableLand["RIGHT_ELBOW_Y"][start-1:end])]
 
-            if all(elem in wordLowerLimit  for elem in sentenceList):
-                skip=1
-                if not(sentence in sentenceMatch):
-                    if(len(testTable)<=150):
-                        testTable.loc[len(testTable.index)] = inRow
-                    else:
-                        valTable.loc[len(trainTable.index)] = inRow
-                    sentenceMatch.append(sentence)
-            if skip==0:
-                trainTable.loc[len(trainTable.index)] = inRow
+                if all(elem in wordLowerLimit  for elem in sentenceList):
+                    skip=1
+                    if not(sentence in sentenceMatch):
+                        if(len(testTable)<=150):
+                            testTable.loc[len(testTable.index)] = inRow
+                        else:
+                            valTable.loc[len(trainTable.index)] = inRow
+                        sentenceMatch.append(sentence)
+                if skip==0:
+                    trainTable.loc[len(trainTable.index)] = inRow
 try:
     os.mkdir("/home/n12i/Desktop/french/final")
 except:
