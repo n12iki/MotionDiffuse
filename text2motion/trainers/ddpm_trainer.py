@@ -231,6 +231,10 @@ class DDPMTrainer(object):
                     for tag, value in logs.items():
                         mean_loss[tag] = value / self.opt.log_every
                     logs = OrderedDict()
+                    print_current_loss(start_time, it, mean_loss, epoch, inner_iter=i)
+
+                if it % self.opt.save_latest == 0 and rank == 0:
+                    self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
                     for k, v in mean_loss.items():
                         values.append(v)
                     for k, v in mean_loss.items():
@@ -241,13 +245,9 @@ class DDPMTrainer(object):
                     if len(values)>10:
                         bestscoreMean=sum(values)/len(values)
                         values=values[1:]
-                    print_current_loss(start_time, it, mean_loss, epoch, inner_iter=i)
                     if bestscoreMean<bestscore:
                         self.save(pjoin(self.opt.model_dir, 'bestMean.tar'), epoch, it)
                         bestscore=bestscoreMean
-
-                if it % self.opt.save_latest == 0 and rank == 0:
-                    self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
 
             if rank == 0:
                 self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
