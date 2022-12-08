@@ -209,6 +209,7 @@ class DDPMTrainer(object):
                 num_gpus=1)
 
         logs = OrderedDict()
+        bestscore=100
         for epoch in range(cur_epoch, self.opt.num_epochs):
             self.train_mode()
             for i, batch_data in enumerate(train_loader):
@@ -226,6 +227,8 @@ class DDPMTrainer(object):
                         mean_loss[tag] = value / self.opt.log_every
                     logs = OrderedDict()
                     print_current_loss(start_time, it, mean_loss, epoch, inner_iter=i)
+                    if mean_loss<bestscore:
+                        self.save(pjoin(self.opt.model_dir, 'best.tar'), epoch, it)
 
                 if it % self.opt.save_latest == 0 and rank == 0:
                     self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
