@@ -257,7 +257,7 @@ class DDPMTrainer(object):
                     values2.append(v)
                 if sum(values2)/len(values2)<bestscore2:
                     bestscore2=sum(values2)/len(values2)
-                    self.save(pjoin(self.opt.model_dir, 'bestMean.tar'), epoch, it)
+                    self.save(pjoin(self.opt.model_dir, 'best.tar'), epoch, it)
                 if len(values)>10:
                     bestscoreMean=sum(values)/len(values)
                     values=values[1:]
