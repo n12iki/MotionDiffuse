@@ -78,6 +78,16 @@ def get_opt(opt_path, device):
         opt.joints_num = 21
         opt.dim_pose = 251
         opt.max_motion_length = 196
+    elif opt.dataset_name == 'LSFB':
+        opt.data_root = '/content/drive/MyDrive/dataFolder/final'
+        opt.motion_dir = pjoin(opt.data_root, 'landmarks')
+        opt.text_dir = pjoin(opt.data_root, 'text')
+        opt.joints_num = 21
+        radius = 240 * 8
+        fps = 12.5
+        dim_pose = 42
+        opt.max_motion_length = 500
+        kinematic_chain = paramUtil.kit_kinematic_chain
     else:
         raise KeyError('Dataset not recognized')
 
