@@ -87,7 +87,6 @@ def get_opt(opt_path, device):
         fps = 12.5
         dim_pose = 42
         opt.max_motion_length = 500
-        kinematic_chain = paramUtil.kit_kinematic_chain
     else:
         raise KeyError('Dataset not recognized')
 
