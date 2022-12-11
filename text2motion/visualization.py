@@ -52,13 +52,22 @@ if __name__ == '__main__':
     opt = get_opt(args.opt_path, device)
     opt.do_denoise = True
 
-    assert opt.dataset_name == "t2m"
-    assert args.motion_length <= 196
-    opt.data_root = './dataset/HumanML3D'
-    opt.motion_dir = pjoin(opt.data_root, 'new_joint_vecs')
-    opt.text_dir = pjoin(opt.data_root, 'texts')
-    opt.joints_num = 22
-    opt.dim_pose = 263
+    #assert opt.dataset_name == "t2m"
+    #assert args.motion_length <= 196
+    #opt.data_root = './dataset/HumanML3D'
+    #opt.motion_dir = pjoin(opt.data_root, 'new_joint_vecs')
+    #opt.text_dir = pjoin(opt.data_root, 'texts')
+    #opt.joints_num = 22
+    #opt.dim_pose = 263
+    #dim_word = 300
+    #dim_pos_ohot = len(POS_enumerator)
+    #num_classes = 200 // opt.unit_length
+
+    opt.data_root = '/content/drive/MyDrive/dataFolder/final'
+    opt.motion_dir = pjoin(opt.data_root, 'landmarks')
+    opt.text_dir = pjoin(opt.data_root, 'text')
+    opt.joints_num = 21
+    opt.dim_pose = 42
     dim_word = 300
     dim_pos_ohot = len(POS_enumerator)
     num_classes = 200 // opt.unit_length
