@@ -24,7 +24,7 @@ def plot_t2m(data, result_path, npy_path, caption):
     #joint = motion_temporal_filter(joint, sigma=1)
     #plot_3d_motion(result_path, paramUtil.t2m_kinematic_chain, joint, title=caption, fps=20)
     if npy_path != "":
-        print(npy_path)
+        print(npy_path, flush=True)
         np.save(npy_path, data)
 
 
