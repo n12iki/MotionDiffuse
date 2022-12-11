@@ -83,9 +83,9 @@ def get_opt(opt_path, device):
         opt.motion_dir = pjoin(opt.data_root, 'landmarks')
         opt.text_dir = pjoin(opt.data_root, 'text')
         opt.joints_num = 21
-        radius = 240 * 8
-        fps = 12.5
-        dim_pose = 42
+        opt.radius = 240 * 8
+        opt.fps = 12.5
+        opt.dim_pose = 42
         opt.max_motion_length = 500
     else:
         raise KeyError('Dataset not recognized')
