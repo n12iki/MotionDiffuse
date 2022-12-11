@@ -1,10 +1,7 @@
 import numpy as np
 import pickle
 from os.path import join as pjoin
-import stanza
 
-
-nlp=stanza.Pipeline('fr')
 POS_enumerator = {
     'VERB': 0,
     'NOUN': 1,
