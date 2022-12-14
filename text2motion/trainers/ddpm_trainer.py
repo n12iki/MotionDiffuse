@@ -58,7 +58,7 @@ class DDPMTrainer(object):
         self.sampler_name = sampler
 
         if args.is_train:
-            self.mse_criterion = weighted_MSELoss() #torch.nn.MSELoss(reduction='none')
+            self.mse_criterion = torch.nn.MSELoss(reduction='none')
         self.to(self.device)
 
     @staticmethod
@@ -138,10 +138,7 @@ class DDPMTrainer(object):
         return all_output
 
     def backward_G(self):
-        if self.opt.is_train: 
-            loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
-        else:
-            loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
+        loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
         self.loss_mot_rec = loss_mot_rec
         loss_logs = OrderedDict({})
@@ -158,8 +155,8 @@ class DDPMTrainer(object):
         return loss_logs
 
     def to(self, device):
-        #if self.opt.is_train:
-        #    self.mse_criterion.to(device)
+        if self.opt.is_train:
+            self.mse_criterion.to(device)
         self.encoder = self.encoder.to(device)
 
     def train_mode(self):
