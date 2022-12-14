@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import random
 import time
 import sys
-from torch import nn
+import torch.nn as nn
 sys.path.append('../trans')
 from trans.transformer import MotionTransformer
 from torch.utils.data import DataLoader
