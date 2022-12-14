@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import random
 import string
+import json
+
 
 def get_random_string(length):
     # choose from all lowercase letter
@@ -55,7 +57,7 @@ for index, row in trainTable.iterrows():
         with open("train.txt","a") as f:
             f.write(str(index)+name+"\n")
 
-
+nameKey={}
 for index, row in testTable.iterrows():
     name=get_random_string(20)
     #print(row[columns])
@@ -75,6 +77,8 @@ for index, row in testTable.iterrows():
     with open("./landmarks/"+str(index)+name+'.npy', 'wb') as f:
         np.save(f, result)
     with open("./text/"+str(index)+name+".txt",'w') as f:
+        nameKey[row["sentence"]]=str(index)+name
+
         print(row["sentence"])
         f.write(row["sentence"])
     if index==0:
@@ -84,6 +88,8 @@ for index, row in testTable.iterrows():
         with open("test.txt","a") as f:
             f.write(str(index)+name+"\n")
 
+with open("nameKey.json",'w') as fp:
+    json.dump(nameKey,fp)
 
 for index, row in valTable.iterrows():
     name=get_random_string(20)
@@ -129,11 +135,7 @@ for index, row in trainTable.iterrows():
     for i in columns:
         values=list(filter(("").__ne__, row[i][1:-1].replace("\n", "").replace("  "," ").split(" ")))
         values=[float(i) for i in values]
-        if any(np.isnan(np.array(values))):
-            print(i)
-            print(index)
-            print(row[i][1:-1])
-        #data[i].append(values)
+        data[i].append(values)
 
 for index, row in testTable.iterrows():
     for i in columns:

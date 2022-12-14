@@ -50,8 +50,13 @@ class DDPMTrainer(object):
         self.sampler_name = sampler
 
         if args.is_train:
-            self.mse_criterion = torch.nn.MSELoss(reduction='none')
+            self.mse_criterion = self.weighted_mse_loss()#torch.nn.MSELoss(reduction='none')
         self.to(self.device)
+
+    @staticmethod
+    def weighted_mse_loss(input, target):
+        weight=torch.FloatTensor([2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+        return (weight * (input - target) ** 2)
 
     @staticmethod
     def zero_grad(opt_list):
