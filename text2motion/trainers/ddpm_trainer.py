@@ -29,6 +29,13 @@ from trans.gaussian_diffusion import (
 
 from datasets import build_dataloader
 
+class weighted_MSELoss(nn.Module):
+    def __init__(self):
+        pass
+    def forward(self,inputs,targets):
+        weight=torch.FloatTensor([2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+        return ((inputs - targets)**2 ) * weight
+
 
 class DDPMTrainer(object):
 
@@ -50,13 +57,8 @@ class DDPMTrainer(object):
         self.sampler_name = sampler
 
         if args.is_train:
-            self.mse_criterion = torch.nn.MSELoss(reduction='none')
+            self.mse_criterion = weighted_MSELoss() #torch.nn.MSELoss(reduction='none')
         self.to(self.device)
-
-    @staticmethod
-    def weighted_mse_loss(input, target):
-        weight=torch.FloatTensor([2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
-        return (weight * (input - target) ** 2)
 
     @staticmethod
     def zero_grad(opt_list):
@@ -135,7 +137,7 @@ class DDPMTrainer(object):
         return all_output
 
     def backward_G(self):
-        loss_mot_rec = self.weighted_mse_loss(self.fake_noise, self.real_noise).mean(dim=-1) #self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
+        loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
         self.loss_mot_rec = loss_mot_rec
         loss_logs = OrderedDict({})
