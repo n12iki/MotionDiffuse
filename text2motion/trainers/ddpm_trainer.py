@@ -139,7 +139,7 @@ class DDPMTrainer(object):
 
     def backward_G(self):
         if self.opt.is_train: 
-            loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1).to(self.device).float()
+            loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
         else:
             loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
