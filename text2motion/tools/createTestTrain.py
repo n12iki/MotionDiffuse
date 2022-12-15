@@ -28,6 +28,38 @@ trainTable=pd.read_csv("/home/n12i/Desktop/french/final/train.csv")
 testTable=pd.read_csv("/home/n12i/Desktop/french/final/test.csv")
 valTable=pd.read_csv("/home/n12i/Desktop/french/final/val.csv")
 
+for index,row in trainTable.iterrows():
+    adjust=[]
+    for name in columns:
+        i=row[name]
+        i=i[1:-1].replace("\n", "").replace("  "," ").split(" ")
+        i=list(filter(("").__ne__, i))
+        i = np.array(i).astype(float)
+        x= str(i[1:]-i[:-1])
+        adjust.append(x)
+    trainTable.loc[index,columns]=adjust
+
+for index,row in testTable.iterrows():
+    adjust=[]
+    for name in columns:
+        i=row[name]
+        i=i[1:-1].replace("\n", "").replace("  "," ").split(" ")
+        i=list(filter(("").__ne__, i))
+        i = np.array(i).astype(float)
+        x= str(i[1:]-i[:-1])
+        adjust.append(x)
+    testTable.loc[index,columns]=adjust
+
+for index,row in valTable.iterrows():
+    adjust=[]
+    for name in columns:
+        i=row[name]
+        i=i[1:-1].replace("\n", "").replace("  "," ").split(" ")
+        i=list(filter(("").__ne__, i))
+        i = np.array(i).astype(float)
+        x= str(i[1:]-i[:-1])
+        adjust.append(x)
+    valTable.loc[index,columns]=adjust
 
 for index, row in trainTable.iterrows():
     name=get_random_string(20)

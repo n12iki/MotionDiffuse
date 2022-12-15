@@ -213,8 +213,3 @@ columns=["RIGHT_WRIST_X","RIGHT_WRIST_Y","RIGHT_THUMB_TIP_X","RIGHT_THUMB_TIP_Y"
                       "LEFT_SHOULDER_X","LEFT_SHOULDER_Y","RIGHT_SHOULDER_X","RIGHT_SHOULDER_Y","LEFT_ELBOW_X","LEFT_ELBOW_Y",
                       "RIGHT_ELBOW_X","RIGHT_ELBOW_Y"
                       ]
-table=np.array()
-for i in range(len(testTable["RIGH_WRIST_X"]):
-    row=np.array()
-    for part in testTable:
-
