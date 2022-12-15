@@ -80,8 +80,8 @@ if __name__ == '__main__':
 
     print("dim_word")
     dim_word = 300
-    #mean = np.load(pjoin(opt.data_root, 'Mean.npy'))
-    #std = np.load(pjoin(opt.data_root, 'Std.npy'))
+    mean = np.load(pjoin(opt.data_root, 'Mean.npy'))
+    std = np.load(pjoin(opt.data_root, 'Std.npy'))
 
     train_split_file = pjoin(opt.data_root, 'train.txt')
     
@@ -102,6 +102,6 @@ if __name__ == '__main__':
     print("trainer")
     trainer = DDPMTrainer(opt, encoder)
     print("Dataset")
-    train_dataset = Text2MotionDataset(opt,train_split_file, opt.times)
+    train_dataset = Text2MotionDataset(opt,mean,std,train_split_file, opt.times)
     print("train")
     trainer.train(train_dataset)
