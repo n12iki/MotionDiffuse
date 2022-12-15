@@ -108,7 +108,7 @@ class Text2MotionDataset(data.Dataset):
         self.name_list = name_list
 
     def inv_transform(self, data):
-        return data #* self.std + self.mean
+        return data * self.std + self.mean
 
     def real_len(self):
         return len(self.data_dict)
