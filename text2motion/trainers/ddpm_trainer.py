@@ -32,7 +32,7 @@ from datasets import build_dataloader
 
 class weighted_MSELoss(nn.Module):
     def __init__(self):
-        pass
+        super().__init__()
     def forward(self,inputs,targets):
         weight=torch.FloatTensor([2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
         return ((inputs - targets)**2 ) * weight
@@ -58,7 +58,7 @@ class DDPMTrainer(object):
         self.sampler_name = sampler
 
         if args.is_train:
-            self.mse_criterion = torch.nn.MSELoss(reduction='none')
+            self.mse_criterion = weighted_MSELoss()#torch.nn.MSELoss(reduction='none')
         self.to(self.device)
 
     @staticmethod
