@@ -4,6 +4,7 @@ import torch.nn.functional as F
 import random
 import time
 import sys
+import torch.nn as nn
 sys.path.append('../trans')
 from trans.transformer import MotionTransformer
 from torch.utils.data import DataLoader
@@ -29,6 +30,13 @@ from trans.gaussian_diffusion import (
 
 from datasets import build_dataloader
 
+class weighted_MSELoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+    def forward(self,inputs,targets,device):
+        weight=torch.FloatTensor([2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]).to(device)
+        return ((inputs - targets)**2 ) * weight
+
 
 class DDPMTrainer(object):
 
@@ -50,7 +58,7 @@ class DDPMTrainer(object):
         self.sampler_name = sampler
 
         if args.is_train:
-            self.mse_criterion = torch.nn.MSELoss(reduction='none')
+            self.mse_criterion = weighted_MSELoss()#torch.nn.MSELoss(reduction='none')
         self.to(self.device)
 
     @staticmethod
@@ -130,7 +138,7 @@ class DDPMTrainer(object):
         return all_output
 
     def backward_G(self):
-        loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
+        loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise,self.device).mean(dim=-1)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
         self.loss_mot_rec = loss_mot_rec
         loss_logs = OrderedDict({})
@@ -209,6 +217,7 @@ class DDPMTrainer(object):
                 num_gpus=1)
 
         logs = OrderedDict()
+        bestscore=100
         for epoch in range(cur_epoch, self.opt.num_epochs):
             self.train_mode()
             for i, batch_data in enumerate(train_loader):
@@ -220,6 +229,11 @@ class DDPMTrainer(object):
                     else:
                         logs[k] += v
                 it += 1
+                values=[]
+                values2=[]
+                bestscore=100
+                bestscoreMean=100
+                bestscore2=100
                 if it % self.opt.log_every == 0 and rank == 0:
                     mean_loss = OrderedDict({})
                     for tag, value in logs.items():
@@ -229,9 +243,35 @@ class DDPMTrainer(object):
 
                 if it % self.opt.save_latest == 0 and rank == 0:
                     self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
+                    for k, v in mean_loss.items():
+                        values.append(v)
+                    for k, v in mean_loss.items():
+                        values2.append(v)
+                    if sum(values2)/len(values2)<bestscore2:
+                        bestscore2=sum(values2)/len(values2)
+                        self.save(pjoin(self.opt.model_dir, 'bestMean.tar'), epoch, it)
+                    if len(values)>10:
+                        bestscoreMean=sum(values)/len(values)
+                        values=values[1:]
+                    if bestscoreMean<bestscore:
+                        self.save(pjoin(self.opt.model_dir, 'bestMean.tar'), epoch, it)
+                        bestscore=bestscoreMean
 
             if rank == 0:
                 self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
+                for k, v in mean_loss.items():
+                    values.append(v)
+                for k, v in mean_loss.items():
+                    values2.append(v)
+                if sum(values2)/len(values2)<bestscore2:
+                    bestscore2=sum(values2)/len(values2)
+                    self.save(pjoin(self.opt.model_dir, 'best.tar'), epoch, it)
+                if len(values)>10:
+                    bestscoreMean=sum(values)/len(values)
+                    values=values[1:]
+                if bestscoreMean<bestscore:
+                    self.save(pjoin(self.opt.model_dir, 'bestMean.tar'), epoch, it)
+                    bestscore=bestscoreMean
 
             if epoch % self.opt.save_every_e == 0 and rank == 0:
                 self.save(pjoin(self.opt.model_dir, 'ckpt_e%03d.tar'%(epoch)),
