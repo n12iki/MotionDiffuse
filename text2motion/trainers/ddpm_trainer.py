@@ -138,7 +138,14 @@ class DDPMTrainer(object):
         return all_output
 
     def backward_G(self):
+<<<<<<< HEAD
         loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
+=======
+        if self.opt.is_train: 
+            loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1).detach().to(self.device).float()
+        else:
+            loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
+>>>>>>> parent of ca30499 (Update ddpm_trainer.py)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
         self.loss_mot_rec = loss_mot_rec
         loss_logs = OrderedDict({})
