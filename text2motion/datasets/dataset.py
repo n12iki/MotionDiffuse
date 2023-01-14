@@ -33,7 +33,7 @@ class Text2MotionDataset(data.Dataset):
         for name in tqdm(id_list):
             try:
                 motion = np.load(pjoin(opt.motion_dir, name + '.npy'))
-                if (len(motion)) < min_motion_len or (len(motion) >= 200):
+                if (len(motion)) < min_motion_len or (len(motion) >= 500):
                     continue
                 text_data = []
                 flag = False
@@ -55,7 +55,7 @@ class Text2MotionDataset(data.Dataset):
                             text_data.append(text_dict)
                         else:
                             n_motion = motion[int(f_tag*20) : int(to_tag*20)]
-                            if (len(n_motion)) < min_motion_len or (len(n_motion) >= 200):
+                            if (len(n_motion)) < min_motion_len or (len(n_motion) >= 500):
                                 continue
                             new_name = random.choice('ABCDEFGHIJKLMNOPQRSTUVW') + '_' + name
                             while new_name in data_dict:
