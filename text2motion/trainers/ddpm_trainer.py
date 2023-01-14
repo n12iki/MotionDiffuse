@@ -141,8 +141,7 @@ class DDPMTrainer(object):
         loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum()+1e-4 / self.src_mask.sum()
         eps = 1e-6
-        if loss_mot_rec.isnan():
-            loss_mot_rec=eps
+        loss_mot_rec=loss_mot_rec.clamp(min=eps)
         self.loss_mot_rec = loss_mot_rec
         loss_logs = OrderedDict({})
         loss_logs['loss_mot_rec'] = self.loss_mot_rec.item()
