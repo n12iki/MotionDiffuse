@@ -58,7 +58,7 @@ class DDPMTrainer(object):
         self.sampler_name = sampler
 
         if args.is_train:
-            self.mse_criterion = weighted_MSELoss()#torch.nn.MSELoss(reduction='none')
+            self.mse_criterion = torch.nn.MSELoss(reduction='none')#weighted_MSELoss()
         self.to(self.device)
 
     @staticmethod
