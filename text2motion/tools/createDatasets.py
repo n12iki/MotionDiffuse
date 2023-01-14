@@ -32,15 +32,15 @@ for filename in files:
             s=row["gloss"]
             count+=1
             s=re.sub(r'[^\w\s]','',s)
-            s=s.split(" ")
+            s=(s.lower()).split(" ")
             s=list(filter(('').__ne__, s))
             words.append(s)
     for index, row in tableR.iterrows():
         if not(pd.isna(row["gloss"])):
-            wordsR.append(row["gloss"].split(" "))
+            wordsR.append((row["gloss"].lower()).split(" "))
     for index, row in tableL.iterrows():
         if not(pd.isna(row["gloss"])):
-            wordsL.append(row["gloss"].split(" "))
+            wordsL.append((row["gloss"].lower()).split(" "))
 
 plt.figure(0)    
 words=[item for sublist in words for item in sublist]
@@ -147,7 +147,7 @@ for filename in files:
             if flag==0:
                 s=row["gloss"]
                 s=re.sub(r'[^\w\s]','',s)
-                s=s.split(" ")
+                s=(s.lower()).split(" ")
                 sentenceList=list(filter(('').__ne__, s))
                 sentence=" ".join(list(filter(('').__ne__, s)))
                 doc = nlp(sentence)
@@ -189,7 +189,7 @@ for filename in files:
                         if(len(testTable)<=150):
                             testTable.loc[len(testTable.index)] = inRow
                         else:
-                            valTable.loc[len(trainTable.index)] = inRow
+                            valTable.loc[len(valTable.index)] = inRow
                         sentenceMatch.append(sentence)
                 if skip==0:
                     trainTable.loc[len(trainTable.index)] = inRow
