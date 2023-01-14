@@ -142,7 +142,7 @@ class DDPMTrainer(object):
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
         eps = 1e-6
         if loss_mot_rec.isnan():
-            loss=eps
+            loss_mot_rec=eps
         self.loss_mot_rec = loss_mot_rec
         loss_logs = OrderedDict({})
         loss_logs['loss_mot_rec'] = self.loss_mot_rec.item()
