@@ -16,7 +16,7 @@ from util.utils import print_current_loss
 from os.path import join as pjoin
 import codecs as cs
 import torch.distributed as dist
-
+import json
 
 from mmcv.runner import get_dist_info
 from trans.gaussian_diffusion import (
@@ -58,7 +58,7 @@ class DDPMTrainer(object):
         self.sampler_name = sampler
 
         if args.is_train:
-            self.mse_criterion = torch.nn.MSELoss(reduction='none')
+            self.mse_criterion = weighted_MSELoss()#torch.nn.MSELoss(reduction='none')
         self.to(self.device)
 
     @staticmethod
@@ -138,7 +138,7 @@ class DDPMTrainer(object):
         return all_output
 
     def backward_G(self):
-        loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
+        loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise,self.device).mean(dim=-1)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
         self.loss_mot_rec = loss_mot_rec
         loss_logs = OrderedDict({})
@@ -234,12 +234,16 @@ class DDPMTrainer(object):
                 bestscore=100
                 bestscoreMean=100
                 bestscore2=100
+                lossHis=json.load(self.opt.model_dir, 'lossHist.json')
                 if it % self.opt.log_every == 0 and rank == 0:
                     mean_loss = OrderedDict({})
                     for tag, value in logs.items():
                         mean_loss[tag] = value / self.opt.log_every
                     logs = OrderedDict()
                     print_current_loss(start_time, it, mean_loss, epoch, inner_iter=i)
+                    for k, v in mean_loss.items():
+                        lossHis[str(epoch)+"_"+str(it)+"_"+str(k)] = v
+                    json.dump(lossHis, pjoin(self.opt.model_dir, 'lossHist.json'))
 
                 if it % self.opt.save_latest == 0 and rank == 0:
                     self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
