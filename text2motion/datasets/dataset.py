@@ -75,7 +75,9 @@ class Text2MotionDataset(data.Dataset):
             except:
                 # Some motion may not exist in KIT dataset
                 pass
-
+        
+        print(new_name_list)
+        print(length_list)
         name_list, length_list = zip(*sorted(zip(new_name_list, length_list), key=lambda x: x[1]))
 
         if opt.is_train:
