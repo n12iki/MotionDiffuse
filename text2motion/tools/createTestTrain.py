@@ -28,6 +28,7 @@ trainTable=pd.read_csv("/home/n12i/Desktop/french/final/train.csv")
 testTable=pd.read_csv("/home/n12i/Desktop/french/final/test.csv")
 valTable=pd.read_csv("/home/n12i/Desktop/french/final/val.csv")
 
+"""
 for index,row in trainTable.iterrows():
     adjust=[]
     for name in columns:
@@ -60,6 +61,7 @@ for index,row in valTable.iterrows():
         x= str(i[1:]-i[:-1])
         adjust.append(x)
     valTable.loc[index,columns]=adjust
+"""
 
 for index, row in trainTable.iterrows():
     name=get_random_string(20)
