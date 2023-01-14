@@ -140,7 +140,7 @@ class DDPMTrainer(object):
     def backward_G(self):
         loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise,self.device).mean(dim=-1)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
-        self.loss_mot_rec = loss_mot_rec
+        self.loss_mot_rec = loss_mot_rec+1e-4
         loss_logs = OrderedDict({})
         loss_logs['loss_mot_rec'] = self.loss_mot_rec.item()
         return loss_logs
