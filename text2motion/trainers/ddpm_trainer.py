@@ -234,7 +234,11 @@ class DDPMTrainer(object):
                 bestscore=100
                 bestscoreMean=100
                 bestscore2=100
-                lossHis=json.load(pjoin(self.opt.model_dir, 'lossHist.json'))
+                try:
+                    with open(pjoin(self.opt.model_dir, 'lossHist.json')) as json_file:
+                        lossHis=json.load(json_file)
+                except:
+                    lossHis={}       
                 if it % self.opt.log_every == 0 and rank == 0:
                     mean_loss = OrderedDict({})
                     for tag, value in logs.items():
