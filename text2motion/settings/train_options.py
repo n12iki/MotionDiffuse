@@ -11,7 +11,7 @@ class TrainCompOptions(BaseOptions):
         self.parser.add_argument('--no_eff', action='store_true', help='whether use efficient attention')
 
         self.parser.add_argument('--num_epochs', type=int, default=50, help='Number of epochs')
-        self.parser.add_argument('--lr', type=float, default=2e-4, help='Learning rate')
+        self.parser.add_argument('--lr', type=float, default=2e-6, help='Learning rate')
         self.parser.add_argument('--batch_size', type=int, default=32, help='Batch size per GPU')
         self.parser.add_argument('--times', type=int, default=1, help='times of dataset')
 
