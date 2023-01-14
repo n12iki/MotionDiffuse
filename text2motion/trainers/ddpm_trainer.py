@@ -247,7 +247,8 @@ class DDPMTrainer(object):
                     print_current_loss(start_time, it, mean_loss, epoch, inner_iter=i)
                     for k, v in mean_loss.items():
                         lossHis[str(epoch)+"_"+str(it)+"_"+str(k)] = v
-                    json.dump(lossHis, pjoin(self.opt.model_dir, 'lossHist.json'))
+                    with open(pjoin(self.opt.model_dir, 'lossHist.json'), 'w') as fp:
+                        json.dump(lossHis, fp)
 
                 if it % self.opt.save_latest == 0 and rank == 0:
                     self.save(pjoin(self.opt.model_dir, 'latest.tar'), epoch, it)
