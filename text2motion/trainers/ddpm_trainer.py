@@ -204,7 +204,7 @@ class DDPMTrainer(object):
                 train_dataset,
                 samples_per_gpu=self.opt.batch_size,
                 drop_last=True,
-                workers_per_gpu=4,
+                workers_per_gpu=1,
                 shuffle=True,
                 dist=self.opt.distributed,
                 num_gpus=len(self.opt.gpu_id))
@@ -213,7 +213,7 @@ class DDPMTrainer(object):
                 train_dataset,
                 samples_per_gpu=self.opt.batch_size,
                 drop_last=True,
-                workers_per_gpu=4,
+                workers_per_gpu=1,
                 shuffle=True,
                 dist=self.opt.distributed,
                 num_gpus=1)
