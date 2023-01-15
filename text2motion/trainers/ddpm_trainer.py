@@ -58,7 +58,7 @@ class DDPMTrainer(object):
         self.sampler_name = sampler
 
         if args.is_train:
-            self.mse_criterion = weighted_MSELoss()#torch.nn.MSELoss(reduction='none')
+            self.mse_criterion = torch.nn.MSELoss(reduction='none')
         self.to(self.device)
 
     @staticmethod
@@ -138,9 +138,9 @@ class DDPMTrainer(object):
         return all_output
 
     def backward_G(self):
-        loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise,self.device).mean(dim=-1)
+        loss_mot_rec = self.mse_criterion(self.fake_noise, self.real_noise).mean(dim=-1)
         loss_mot_rec = (loss_mot_rec * self.src_mask).sum() / self.src_mask.sum()
-        loss_mot_rec = torch.abs((loss_mot_rec))+1e-6    
+        loss_mot_rec = torch.abs((loss_mot_rec))+1e-6
         self.loss_mot_rec = loss_mot_rec
         loss_logs = OrderedDict({})
         loss_logs['loss_mot_rec'] = self.loss_mot_rec.item()
@@ -165,6 +165,7 @@ class DDPMTrainer(object):
 
     def eval_mode(self):
         self.encoder.eval()
+
 
     def save(self, file_name, ep, total_it):
         state = {
@@ -194,7 +195,6 @@ class DDPMTrainer(object):
         cur_epoch = 0
         if self.opt.is_continue:
             model_dir = pjoin(self.opt.model_dir, 'latest.tar')
-            print(model_dir)
             cur_epoch, it = self.load(model_dir)
 
         start_time = time.time()
@@ -240,7 +240,7 @@ class DDPMTrainer(object):
                     with open(pjoin(self.opt.model_dir, 'lossHist.json')) as json_file:
                         lossHis=json.load(json_file)
                 except:
-                    lossHis={}       
+                    lossHis={}
                 if it % self.opt.log_every == 0 and rank == 0:
                     mean_loss = OrderedDict({})
                     for tag, value in logs.items():
