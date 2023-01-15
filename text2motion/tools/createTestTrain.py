@@ -111,7 +111,9 @@ for index, row in testTable.iterrows():
     with open("./landmarks/"+str(index)+name+'.npy', 'wb') as f:
         np.save(f, result)
     with open("./text/"+str(index)+name+".txt",'w') as f:
-        nameKey[row["sentence"]]=str(index)+name
+        nameKey[row["sentence"]]={}
+        nameKey[row["sentence"]]["file"]=str(index)+name
+        nameKey[row["sentence"]]["length"]=length
 
         print(row["sentence"])
         f.write(row["sentence"])
