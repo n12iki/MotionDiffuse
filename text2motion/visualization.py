@@ -64,6 +64,7 @@ if __name__ == '__main__':
     #dim_pos_ohot = len(POS_enumerator)
     #num_classes = 200 // opt.unit_length
 
+
     opt.data_root = '/content/drive/MyDrive/dataFolder/final'
     opt.motion_dir = pjoin(opt.data_root, 'landmarks')
     opt.text_dir = pjoin(opt.data_root, 'text')
@@ -91,5 +92,8 @@ if __name__ == '__main__':
             pred_motions = trainer.generate(caption, m_lens, opt.dim_pose)
             motion = pred_motions[0].cpu().numpy()
             motion = motion * std + mean
-            title = args.text + " #%d" % motion.shape[0]
-            plot_t2m(motion, args.result_path, args.npy_path, title)
+            print(type(motion))
+            with open("/content/drive/MyDrive/Output/"+(args.text).replace(' ', '')+'.npy', 'wb') as f:
+                np.save(f,motion)
+            #title = args.text + " #%d" % motion.shape[0]
+            #plot_t2m(motion, args.result_path, args.npy_path, title)
