@@ -194,7 +194,8 @@ class DDPMTrainer(object):
         cur_epoch = 0
         if self.opt.is_continue:
 
-            model_dir = pjoin("/content/drive/MyDrive/dataFolder/models1/LSFB/kit_baseline_1gpu_8layers_1000/model", 'latest.tar')
+            #model_dir = pjoin("/content/drive/MyDrive/dataFolder/models1/LSFB/kit_baseline_1gpu_8layers_1000/model", 'latest.tar')
+            model_dir="/content/drive/MyDrive/dataFolder/models1/LSFB/kit_baseline_1gpu_8layers_1000/model/latest.tar"
             print(model_dir)
             cur_epoch, it = self.load(model_dir)
 
