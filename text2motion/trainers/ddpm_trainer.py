@@ -194,6 +194,7 @@ class DDPMTrainer(object):
         cur_epoch = 0
         if self.opt.is_continue:
             model_dir = pjoin(self.opt.model_dir, 'latest.tar')
+            print(model_dir)
             cur_epoch, it = self.load(model_dir)
 
         start_time = time.time()
