@@ -65,7 +65,7 @@ if __name__ == '__main__':
         opt.max_motion_length = 196
         kinematic_chain = paramUtil.kit_kinematic_chain
     elif opt.dataset_name == 'LSFB':
-        opt.data_root = '/notebooks/MotionData/'
+        opt.data_root = '/notebooks/PositionalData'
         opt.motion_dir = pjoin(opt.data_root, 'landmarks')
         opt.text_dir = pjoin(opt.data_root, 'text')
         opt.joints_num = 21
