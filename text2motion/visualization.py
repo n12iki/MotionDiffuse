@@ -87,7 +87,7 @@ if __name__ == '__main__':
     result_dict = {}
     with torch.no_grad():
         if args.motion_length != -1:
-            if args.txt.endswith(".json"):
+            if args.text.endswith(".json"):
                 with open(args.text) as json_file:
                     testSet=json.load(json_file)
                 for i in testSet:
