@@ -88,10 +88,11 @@ if __name__ == '__main__':
     with torch.no_grad():
         if args.motion_length != -1:
             if args.txt.endswith(".json"):
-                with open(args.txt) as json_file:
+                with open(args.text) as json_file:
                     testSet=json.load(json_file)
                 for i in testSet:
                     input=i.split("#")[0]
+                    m_lens=testSet[i]["length"]
                     caption = [input]
                     m_lens = torch.LongTensor([args.motion_length]).to(device)
                     pred_motions = trainer.generate(caption, m_lens, opt.dim_pose)
