@@ -101,5 +101,5 @@ if __name__ == '__main__':
                     testSet[i]["output"]=motion
                     #title = args.text + " #%d" % motion.shape[0]
                     #plot_t2m(motion, args.result_path, args.npy_path, title)
-                with open("/content/drive/MyDrive/Output/output.json") as output_file:
+                with open("/content/drive/MyDrive/Output/Position_MSE_output.json") as output_file:
                     json.dump(testSet,output_file)
