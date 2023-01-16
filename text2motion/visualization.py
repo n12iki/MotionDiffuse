@@ -15,7 +15,7 @@ from trans.transformer import MotionTransformer
 from util.word_vectorizer import WordVectorizer, POS_enumerator
 from util.utils import *
 from util.motion_process import recover_from_ric
-
+import json
 
 def plot_t2m(data, result_path, npy_path, caption):
     
@@ -87,13 +87,18 @@ if __name__ == '__main__':
     result_dict = {}
     with torch.no_grad():
         if args.motion_length != -1:
-            caption = [args.text]
-            m_lens = torch.LongTensor([args.motion_length]).to(device)
-            pred_motions = trainer.generate(caption, m_lens, opt.dim_pose)
-            motion = pred_motions[0].cpu().numpy()
-            motion = motion * std + mean
-            print(type(motion))
-            with open("/content/drive/MyDrive/Output/"+(args.text).replace(' ', '')+'.npy', 'wb') as f:
-                np.save(f,motion)
-            #title = args.text + " #%d" % motion.shape[0]
-            #plot_t2m(motion, args.result_path, args.npy_path, title)
+            if args.txt.endswith(".json"):
+                with open(args.txt) as json_file:
+                    testSet=json.load(json_file)
+                for i in testSet:
+                    input=i.split("#")[0]
+                    caption = [input]
+                    m_lens = torch.LongTensor([args.motion_length]).to(device)
+                    pred_motions = trainer.generate(caption, m_lens, opt.dim_pose)
+                    motion = pred_motions[0].cpu().numpy()
+                    motion = motion * std + mean
+                    print(type(motion))
+                    with open("/content/drive/MyDrive/Output/"+(args.text).replace(' ', '')+'.npy', 'wb') as f:
+                        np.save(f,motion)
+                    #title = args.text + " #%d" % motion.shape[0]
+                    #plot_t2m(motion, args.result_path, args.npy_path, title)
