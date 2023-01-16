@@ -98,7 +98,7 @@ if __name__ == '__main__':
                     pred_motions = trainer.generate(caption, m_lens, opt.dim_pose)
                     motion = pred_motions[0].cpu().numpy()
                     motion = motion * std + mean
-                    testSet[i]["output"]=motion
+                    testSet[i]["output"]=list(motion)
                     #title = args.text + " #%d" % motion.shape[0]
                     #plot_t2m(motion, args.result_path, args.npy_path, title)
                     break
