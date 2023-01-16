@@ -98,8 +98,8 @@ if __name__ == '__main__':
                     pred_motions = trainer.generate(caption, m_lens, opt.dim_pose)
                     motion = pred_motions[0].cpu().numpy()
                     motion = motion * std + mean
-                    print(type(motion))
-                    with open("/content/drive/MyDrive/Output/"+(args.text).replace(' ', '')+'.npy', 'wb') as f:
-                        np.save(f,motion)
+                    testSet[i]["output"]=motion
                     #title = args.text + " #%d" % motion.shape[0]
                     #plot_t2m(motion, args.result_path, args.npy_path, title)
+                with open("/content/drive/MyDrive/Output/output.json") as output_file:
+                    json.save(testSet,output_file)
