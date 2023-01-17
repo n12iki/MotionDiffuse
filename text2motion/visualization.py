@@ -101,11 +101,11 @@ if __name__ == '__main__':
                     motion = pred_motions[0].cpu().numpy()
                     motion = motion * std + mean
                     testSet[i]["output"]=motion.tolist()
-                    count=count+1
                     if count%10==0:
                         with open("/content/drive/MyDrive/Output/"+str(args.result_path),"w") as output_file:
                             json.dump(testSet,output_file)
                         output_file.close()
+                     count=count+1
                     #title = args.text + " #%d" % motion.shape[0]
                     #plot_t2m(motion, args.result_path, args.npy_path, title)s
                 with open("/content/drive/MyDrive/Output/"+str(args.result_path),"w") as output_file:
