@@ -101,6 +101,5 @@ if __name__ == '__main__':
                     testSet[i]["output"]=motion.tolist()
                     #title = args.text + " #%d" % motion.shape[0]
                     #plot_t2m(motion, args.result_path, args.npy_path, title)s
-                    break
                 with open("/content/drive/MyDrive/Output/"+str(args.result_path),"w") as output_file:
                     json.dump(testSet,output_file)
