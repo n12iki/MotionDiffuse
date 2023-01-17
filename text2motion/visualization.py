@@ -90,6 +90,8 @@ if __name__ == '__main__':
             if args.text.endswith(".json"):
                 with open(args.text) as json_file:
                     testSet=json.load(json_file)
+
+                count=0
                 for i in testSet:
                     input=i.split("#")[0]
                     m_lens=testSet[i]["length"]
@@ -99,7 +101,13 @@ if __name__ == '__main__':
                     motion = pred_motions[0].cpu().numpy()
                     motion = motion * std + mean
                     testSet[i]["output"]=motion.tolist()
+                    count=count+1
+                    if count%10==0:
+                        with open("/content/drive/MyDrive/Output/"+str(args.result_path),"w") as output_file:
+                            json.dump(testSet,output_file)
+                        output_file.close()
                     #title = args.text + " #%d" % motion.shape[0]
                     #plot_t2m(motion, args.result_path, args.npy_path, title)s
                 with open("/content/drive/MyDrive/Output/"+str(args.result_path),"w") as output_file:
                     json.dump(testSet,output_file)
+                output_file.close()
