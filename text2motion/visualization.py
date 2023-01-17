@@ -96,7 +96,7 @@ if __name__ == '__main__':
                     input=i.split("#")[0]
                     caption = [input]
                     #m_lens = torch.LongTensor([args.motion_length]).to(device)
-                    m_lens=torch.LongTensor([testSet[i]["length"]]).to(device)
+                    m_lens=torch.LongTensor([testSet[i]["length"]-1]).to(device)
                     pred_motions = trainer.generate(caption, m_lens, opt.dim_pose)
                     motion = pred_motions[0].cpu().numpy()
                     motion = motion * std + mean
