@@ -20,7 +20,7 @@ class TrainCompOptions(BaseOptions):
         self.parser.add_argument('--is_continue', action="store_true", help='Is this trail continued from previous trail?')
 
         self.parser.add_argument('--log_every', type=int, default=50, help='Frequency of printing training progress (by iteration)')
-        self.parser.add_argument('--save_every_e', type=int, default=24, help='Frequency of saving models (by epoch)')
+        self.parser.add_argument('--save_every_e', type=int, default=100, help='Frequency of saving models (by epoch)')
         self.parser.add_argument('--eval_every_e', type=int, default=5, help='Frequency of animation results (by epoch)')
         self.parser.add_argument('--save_latest', type=int, default=500, help='Frequency of saving models (by iteration)')
         self.is_train = True
